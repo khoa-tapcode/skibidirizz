@@ -1,130 +1,58 @@
-local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
-local RunService = game:GetService("RunService")
-
-RunService.RenderStepped:Connect(function()
-    for _, v in ipairs(CoreGui:GetChildren()) do
-        if v.Name == "rz-warning" then
-            v:Destroy()
-        end
-    end
-end)
-
 local _ENV = (getgenv or getrenv or getfenv)()
 
 local Scripts = {
-	{
-		PlacesIds = {2753915549, 4442272183, 7449423635},
-		UrlPath = "BloxFruits.luau"
-	},
-	{
-		PlacesIds = {10260193230},
-		UrlPath = "MemeSea.luau"
-	}
+    {
+        PlacesIds = {2753915549, 4442272183, 7449423635},
+        UrlPath = "Games/BloxFruits.lua"
+    },
+    {
+        PlacesIds = {10260193230},
+        UrlPath = "Games/MemeSea.lua"
+    }
 }
 
-local fetcher, urls = {}, {}
+local BASE_URL = "https://raw.githubusercontent.com/khoa-tapcode/Scripts/main/"
 
-do
-	local last_exec = _ENV.rz_execute_debounce
-	
-	if last_exec and (tick() - last_exec) <= 5 then
-		return nil
-	end
-	
-	_ENV.rz_execute_debounce = tick()
+local fetcher = {}
+
+local function formatUrl(path)
+    return BASE_URL .. path
 end
 
-urls.Owner = "https://raw.githubusercontent.com/tlredz/"
-urls.Repository = urls.Owner .. "Scripts/refs/heads/main/"
-urls.Translator = urls.Repository .. "Translator/"
-urls.Utils = urls.Repository .. "Utils/"
-
-do
-	local executor = syn or fluxus
-	local queueteleport = queue_on_teleport or (executor and executor.queue_on_teleport)
-	
-	if not _ENV.rz_added_teleport_queue and type(queueteleport) == "function" then
-		local ScriptSettings = {...}
-		local SettingsCode = ""
-		
-		_ENV.rz_added_teleport_queue = true
-		
-		local Success, EncodedSettings = pcall(function()
-			return game:GetService("HttpService"):JSONEncode(ScriptSettings)
-		end)
-		
-		if Success and EncodedSettings then
-			SettingsCode = "unpack(game:GetService('HttpService'):JSONDecode('" .. EncodedSettings .. "'))"
-		end
-		
-		local SourceCode = ("loadstring(game:HttpGet('%smain.luau'))(%s)"):format(urls.Repository, SettingsCode)
-		
-		pcall(queueteleport, SourceCode)
-	end
+function fetcher.get(path)
+    local success, response = pcall(function()
+        return game:HttpGet(formatUrl(path))
+    end)
+    if success then
+        return response
+    else
+        warn("[Fetcher] Failed to get:", path, response)
+        return nil
+    end
 end
 
-do
-	if _ENV.rz_error_message then
-		_ENV.rz_error_message:Destroy()
-	end
-	
-	local identifyexecutorFn = identifyexecutor or (function() return "Unknown" end)
-	
-	local function CreateMessageError(Text)
-		_ENV.loadedFarm = nil
-		_ENV.OnFarm = false
-		
-		local Message = Instance.new("Message", workspace)
-		Message.Text = string.gsub(Text, urls.Owner, "")
-		_ENV.rz_error_message = Message
-		
-		error(Text, 2)
-	end
-	
-	local function formatUrl(Url)
-		for key, path in pairs(urls) do
-			if Url:find("{" .. key .. "}") then
-				return Url:gsub("{" .. key .. "}", path)
-			end
-		end
-		
-		return Url
-	end
-	
-	function fetcher.get(Url)
-		local success, response = pcall(function()
-			return game:HttpGet(formatUrl(Url))
-		end)
-		
-		if success then
-			return response
-		else
-			CreateMessageError(`[1] [{ identifyexecutorFn() }] failed to get http/url/raw: { Url }\n>>{ response }<<`)
-		end
-	end
-	
-	function fetcher.load(Url: string, concat: string?)
-		local raw = fetcher.get(Url) .. (if concat then concat else "")
-		local runFunction, errorText = loadstring(raw)
-		
-		if type(runFunction) ~= "function" then
-			CreateMessageError(`[2] [{ identifyexecutorFn() }] syntax error: { Url }\n>>{ errorText }<<`)
-		else
-			return runFunction
-		end
-	end
+function fetcher.load(path, concat)
+    local raw = fetcher.get(path)
+    if not raw then return end
+    raw = raw .. (concat or "")
+    local func, err = loadstring(raw)
+    if not func then
+        warn("[Fetcher] Syntax error in", path, err)
+        return
+    end
+    return func
 end
 
 local function IsPlace(Script)
-	if Script.PlacesIds and table.find(Script.PlacesIds, game.PlaceId) then
-		return true
-	elseif Script.GameId and Script.GameId == game.GameId then
-		return true
-	end
+    if Script.PlacesIds and table.find(Script.PlacesIds, game.PlaceId) then
+        return true
+    elseif Script.GameId and Script.GameId == game.GameId then
+        return true
+    end
 end
 
 for _, Script in ipairs(Scripts) do
-	if IsPlace(Script) then
-		return fetcher.load("{Repository}Games/" .. Script.UrlPath)(fetcher, ...)
-	end
+    if IsPlace(Script) then
+        return fetcher.load(Script.UrlPath)(fetcher, ...)
+    end
 end
