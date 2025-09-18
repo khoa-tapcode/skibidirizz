@@ -8,10 +8,11 @@ if CoreGui:FindFirstChild("skibidi-ui") then
 	CoreGui["skibidi-ui"]:Destroy()
 end
 
-local ScreenGui = Instance.new("ScreenGui", CoreGui)
+local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "skibidi-ui"
 ScreenGui.IgnoreGuiInset = true
-Debris:AddItem(ScreenGui, 25)
+ScreenGui.Parent = CoreGui
+Debris:AddItem(ScreenGui, 25) -- xoá sau 25 giây (nếu không muốn thì bỏ dòng này)
 
 local Background = Instance.new("Frame", ScreenGui)
 Background.BackgroundColor3 = Color3.fromRGB(135, 206, 250)
