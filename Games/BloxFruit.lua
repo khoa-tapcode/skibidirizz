@@ -14,14 +14,14 @@ ScreenGui.IgnoreGuiInset = true
 Debris:AddItem(ScreenGui, 25)
 
 local Background = Instance.new("Frame", ScreenGui)
-Background.BackgroundColor3 = Color3.fromRGB(135, 206, 250) -- xanh da trời
+Background.BackgroundColor3 = Color3.fromRGB(135, 206, 250)
 Background.Size = UDim2.fromScale(1, 1)
 
 local Gradient = Instance.new("UIGradient", Background)
 Gradient.Rotation = 90
 Gradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 120, 215));
-	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 25, 25));
+	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 120, 215)),
+	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 25, 25)),
 })
 
 local Center = Instance.new("Frame", Background)
@@ -33,35 +33,13 @@ Center.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 local Corner = Instance.new("UICorner", Center)
 Corner.CornerRadius = UDim.new(0, 8)
 
-local ServerLink = "discord.gg/skibidi-hub"
-
-local CopyLink = Instance.new("TextButton", Center)
-CopyLink.Text = ServerLink
-CopyLink.Size = UDim2.new(0.8, 0, 0.6, 0)
-CopyLink.AnchorPoint = Vector2.new(0.5, 0.5)
-CopyLink.Position = UDim2.fromScale(0.5, 0.5)
-CopyLink.Font = Enum.Font.FredokaOne
-CopyLink.TextColor3 = Color3.fromRGB(180, 180, 180)
-CopyLink.TextScaled = true
-CopyLink.TextTransparency = 0.2
-CopyLink.BackgroundTransparency = 1
-
-CopyLink.Activated:Connect(function()
-	if CopyLink.Text ~= "Copied!" then
-		setclipboard(ServerLink)
-		CopyLink.Text = "Copied!"
-		task.wait(2)
-		CopyLink.Text = ServerLink
-	end
-end)
-
 local CloseButton = Instance.new("TextButton", Background)
 CloseButton.Size = UDim2.fromScale(0.1, 0.055)
 CloseButton.Position = UDim2.fromScale(0.29, 0.99)
 CloseButton.AnchorPoint = Vector2.new(1, 1)
 CloseButton.Text = "Close"
 CloseButton.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-CloseButton.TextColor3 = Color3.fromRGB(0, 200, 255) -- xanh sáng cho nút close
+CloseButton.TextColor3 = Color3.fromRGB(0, 200, 255)
 CloseButton.Font = Enum.Font.FredokaOne
 CloseButton.TextScaled = true
 CloseButton.TextTransparency = 0.4
