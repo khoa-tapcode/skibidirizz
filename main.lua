@@ -23,10 +23,10 @@ do
     _ENV.rz_execute_debounce = tick()
 end
 
-urls.Owner = "https://raw.githubusercontent.com/tlredz/";
-urls.Repository = urls.Owner .. "Scripts/refs/heads/main/";
-urls.Translator = urls.Repository .. "Translator/";
-urls.Utils = urls.Repository .. "Utils/";
+urls.Owner = "https://raw.githubusercontent.com/tlredz/"
+urls.Repository = urls.Owner .. "Scripts/refs/heads/main/"
+urls.Translator = urls.Repository .. "Translator/"
+urls.Utils = urls.Repository .. "Utils/"
 
 do
     local executor = syn or fluxus or solara
@@ -43,4 +43,12 @@ do
         end)
 
         if Success and EncodedSettings then
-            SettingsCode = "unpack(game:GetService('HttpService'):JSONDeco
+            SettingsCode = "unpack(game:GetService('HttpService'):JSONDecode([[" .. EncodedSettings .. "]]))"
+        end
+
+        queueteleport([[
+            local Settings = ]] .. SettingsCode .. [[
+            -- chèn code cần chạy sau khi teleport vào đây
+        ]])
+    end
+end
