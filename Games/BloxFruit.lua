@@ -34,18 +34,6 @@ local Corner = Instance.new("UICorner", Center)
 Corner.CornerRadius = UDim.new(0, 8)
 
 local ServerLink = "discord.gg/skibidi-hub"
-local WarnMessage = "Skibidi Hub is currently updating!\nJoin our Discord for more info."
-
-local Warn = Instance.new("TextLabel", Background)
-Warn.Text = WarnMessage
-Warn.Size = UDim2.new(0.6, 0, 0.2, 0)
-Warn.AnchorPoint = Vector2.new(0.5, 0.5)
-Warn.Position = UDim2.fromScale(0.5, 0.5)
-Warn.Font = Enum.Font.FredokaOne
-Warn.TextColor3 = Color3.fromRGB(230, 230, 230)
-Warn.TextScaled = true
-Warn.BackgroundTransparency = 1
-Warn.Visible = false -- ẩn cảnh báo
 
 local CopyLink = Instance.new("TextButton", Center)
 CopyLink.Text = ServerLink
