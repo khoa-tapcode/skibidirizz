@@ -33,39 +33,6 @@ Center.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 local Corner = Instance.new("UICorner", Center)
 Corner.CornerRadius = UDim.new(0, 8)
 
-local ServerLink = "discord.gg/redz-hub"
-local WarnMessage = "redz Hub is down for Now\njoin our discord for more information!"
-
-local Warn = Instance.new("TextLabel", Background)
-Warn.Text = WarnMessage
-Warn.Size = UDim2.new(0.6, 0, 0.2, 0)
-Warn.AnchorPoint = Vector2.new(0.5, 0.5)
-Warn.Position = UDim2.fromScale(0.5, 0.5)
-Warn.Font = Enum.Font.FredokaOne
-Warn.TextColor3 = Color3.fromRGB(230, 230, 230)
-Warn.TextScaled = true
-Warn.BackgroundTransparency = 1
-
-local CopyLink = Instance.new("TextButton", Center)
-CopyLink.Text = ServerLink
-CopyLink.Size = UDim2.new(0.8, 0, 0.6, 0)
-CopyLink.AnchorPoint = Vector2.new(0.5, 0.5)
-CopyLink.Position = UDim2.fromScale(0.5, 0.5)
-CopyLink.Font = Enum.Font.FredokaOne
-CopyLink.TextColor3 = Color3.fromRGB(180, 180, 180)
-CopyLink.TextScaled = true
-CopyLink.TextTransparency = 0.2
-CopyLink.BackgroundTransparency = 1
-
-CopyLink.Activated:Connect(function()
-	if CopyLink.Text ~= "Copied!" then
-		setclipboard(ServerLink)
-		CopyLink.Text = "Copied!"
-		task.wait(2)
-		CopyLink.Text = ServerLink
-	end
-end)
-
 local CloseButton = Instance.new("TextButton", Background)
 CloseButton.Size = UDim2.fromScale(0.1, 0.055)
 CloseButton.Position = UDim2.fromScale(0.29, 0.99)
