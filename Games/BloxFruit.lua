@@ -1,52 +1,71 @@
-local TweenService = game:GetService("TweenService");
-local Players = game:GetService("Players");
-local Debris = game:GetService("Debris");
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local Debris = game:GetService("Debris")
 
-local CoreGui = (gethui and gethui()) or game:GetService("CoreGui");
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 
-if CoreGui:FindFirstChild("rz-warning") then
-	CoreGui["rz-warning"]:Destroy()
+pcall(function()
+    local old = CoreGui:FindFirstChild("skibidi-warning")
+    if old then old:Destroy() end
+end)
+
+local GUI_NAME = "skibidi-ui"
+
+if CoreGui:FindFirstChild(GUI_NAME) then
+    return
 end
 
-local ScreenGui = Instance.new("ScreenGui", CoreGui)
-ScreenGui.Name = "rz-warning"
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = GUI_NAME
 ScreenGui.IgnoreGuiInset = true
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = CoreGui
 Debris:AddItem(ScreenGui, 25)
 
-local Background = Instance.new("Frame", ScreenGui)
-Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local Background = Instance.new("Frame")
+Background.Name = "Background"
+Background.BackgroundTransparency = 1
 Background.Size = UDim2.fromScale(1, 1)
-	
-local Gradient = Instance.new("UIGradient", Background)
-Gradient.Rotation = 90
-Gradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0));
-	ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 25, 25));
-})
+Background.BorderSizePixel = 0
+Background.Parent = ScreenGui
 
-local Center = Instance.new("Frame", Background)
-Center.Size = UDim2.fromScale(0.25, 0.09);
-Center.AnchorPoint = Vector2.new(0.5, 1)
-Center.Position = UDim2.new(0.5, 0, 0.95, 0)
-Center.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+local MiniBar = Instance.new("Frame")
+MiniBar.Name = "MiniBar"
+MiniBar.Size = UDim2.fromScale(0.18, 0.06)
+MiniBar.AnchorPoint = Vector2.new(0.5, 1)
+MiniBar.Position = UDim2.new(0.5, 0, 0.98, 0)
+MiniBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MiniBar.BackgroundTransparency = 0
+MiniBar.BorderSizePixel = 0
+MiniBar.Parent = Background
 
-local Corner = Instance.new("UICorner", Center)
-Corner.CornerRadius = UDim.new(0, 8)
+local MiniCorner = Instance.new("UICorner")
+MiniCorner.CornerRadius = UDim.new(0, 8)
+MiniCorner.Parent = MiniBar
 
-local CloseButton = Instance.new("TextButton", Background)
-CloseButton.Size = UDim2.fromScale(0.1, 0.055)
-CloseButton.Position = UDim2.fromScale(0.29, 0.99)
-CloseButton.AnchorPoint = Vector2.new(1, 1)
-CloseButton.Text = "Close"
-CloseButton.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-CloseButton.TextColor3 = Color3.fromRGB(235, 20, 20)
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.fromScale(0.18, 0.75)
+CloseButton.AnchorPoint = Vector2.new(1, 0.5)
+CloseButton.Position = UDim2.fromScale(0.98, 0.5)
+CloseButton.BackgroundTransparency = 1
+CloseButton.Text = "✕"
 CloseButton.Font = Enum.Font.FredokaOne
 CloseButton.TextScaled = true
-CloseButton.TextTransparency = 0.6
+CloseButton.TextColor3 = Color3.fromRGB(235, 20, 20)
+CloseButton.Parent = MiniBar
 
-local Corner2 = Instance.new("UICorner", CloseButton)
-Corner2.CornerRadius = UDim.new(0, 8)
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 8)
+CloseCorner.Parent = CloseButton
 
 CloseButton.Activated:Connect(function()
-	ScreenGui:Destroy()
+    pcall(function() ScreenGui:Destroy() end)
+end)
+
+pcall(function()
+    local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local t = TweenService:Create(MiniBar, tweenInfo, { BackgroundTransparency = 0 })
+    MiniBar.BackgroundTransparency = 1
+    t:Play()
 end)
