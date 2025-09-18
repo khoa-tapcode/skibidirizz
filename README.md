@@ -1,0 +1,2 @@
+# skibidirizz
+just a script
