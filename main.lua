@@ -1,3 +1,14 @@
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+
+RunService.RenderStepped:Connect(function()
+    for _, v in ipairs(CoreGui:GetChildren()) do
+        if v.Name == "rz-warning" then
+            v:Destroy()
+        end
+    end
+end)
+
 local _ENV = (getgenv or getrenv or getfenv)()
 
 local Scripts = {
